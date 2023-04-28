@@ -1,7 +1,7 @@
 #include <SPI.h>
 #include <Tiny4kOLED.h>
 
-int slaveSelect;
+int slaveSelect = 10;;
 
 
 int detectPin = 3;
@@ -57,10 +57,11 @@ void detectSensor()
 }
 void sendWeight()
 {
-  weightLoss = 0;
+  
   digitalWrite(slaveSelect, LOW);
   SPI.transfer(weightLoss);
   delay(500);
   digitalWrite(slaveSelect, HIGH);  
   delay(500);
+  weightLoss = 0;
 }

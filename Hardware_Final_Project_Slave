@@ -37,7 +37,8 @@ void setup()
 {
   
   Serial.begin(9600); //set Commns with serial
-
+  //SPI.begin();
+  
   //set pins to INPUT pin
   pinMode(outA, INPUT);
   pinMode(outB, INPUT);
@@ -48,7 +49,7 @@ void setup()
 
   //SPI setup
   SPCR |= 0b11000000; //turns on SPIE (enable SPI interrupt), turns on SPE (enables SPI)
-  //pinMode(MISO, OUTPUT); //for slave to send Data to master
+  pinMode(MISO, OUTPUT); //for slave to send Data to master
 
   oled.begin();
   oled.on();
@@ -64,7 +65,10 @@ void setup()
 
 ISR (SPI_STC_vect) //SPI interrupt routine
 {
+  
   weightLoss = SPDR; //read data from the SPI data register
+  Serial.println("weightLoss");
+  Serial.println(weightLoss);
   weight -= weightLoss; //adjust the weight from the data received
 }
 
@@ -81,13 +85,14 @@ void loop()
 void printOLED()
 {
   
-  
-
   oled.setCursor(0,0);
+  oled.print("CWeight:");
+
+  oled.setCursor(0,2);
   oled.print(weight);
   oled.print(" lbs");  
-  Serial.print(weight);
-  Serial.println(" lbs");
+ // Serial.print(weight);
+  //Serial.println(" lbs");
   //delay(1000);
   //oled.clear();
   //delay(1000);
@@ -113,13 +118,13 @@ void setWeight()
       if (currB) //if b is "low"
       {
         weight+=incrementFactor; //increment count  
-        Serial.println("hi"); 
+       // Serial.println("hi"); 
         delay(20);     
       }
       else if(!currB && (weight - incrementFactor > 0)) //if b is "high" and decrement won't go below 0
       {
         weight-=incrementFactor; //decrement count  
-        Serial.println("bye"); 
+       // Serial.println("bye"); 
         delay(20); 
       }        
     }  
@@ -134,7 +139,7 @@ void setWeight()
 void toggleWeight()
 {
   setWeightFlag = !setWeightFlag;
-  Serial.print("setWeightFlag = ");
-  Serial.println(setWeightFlag);
+ // Serial.print("setWeightFlag = ");
+  //Serial.println(setWeightFlag);
   delay(20);
 }
