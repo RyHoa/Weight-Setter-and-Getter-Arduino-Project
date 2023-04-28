@@ -2,40 +2,40 @@
 //
 //
 
-
+#include <Tiny4kOLED.h>
 #include<SPI.h>
-#include <LiquidCrystal.h>
 
 
 
 
 
-//Used this website to learn more about LCD screens and the idea on how to code the LCD:
-//https://docs.arduino.cc/learn/electronics/lcd-displays
-const int rs = 11, en = 10, d4 = 9, d5 = 8, d6 = 7, d7 = 6; //set the values of the arduino pins to the LCD pins
-LiquidCrystal LCD(rs, en, d4, d5, d6, d7); //created an instance of the LCD
+
+
 
 float weight = 100;
 
 
 //set weight
-int outA =13;
-int outB = 12;
+int outA = 3;
+int outB = 4;
+float temp;
 bool currA;
-bool prevA = 1; 
+bool currB;
+bool prevA = 0; 
 
 
-volatile bool setWeightFlag = false;
+
+float incrementFactor = 5;
 int setWeightPin = 2;
+volatile bool setWeightFlag = 0;
 
-//spi setup 
-byte weightLoss; 
+byte weightLoss;
 
 
 
 void setup() 
 {
-  LCD.begin(16,2); //set the 16 columns and 2 rows in the LCD 
+  
   Serial.begin(9600); //set Commns with serial
 
   //set pins to INPUT pin
@@ -50,7 +50,16 @@ void setup()
   SPCR |= 0b11000000; //turns on SPIE (enable SPI interrupt), turns on SPE (enables SPI)
   //pinMode(MISO, OUTPUT); //for slave to send Data to master
 
+  oled.begin();
+  oled.on();
+  oled.clear();
+  oled.setFont(FONT8X16);
+  oled.clear();
+  oled.switchRenderFrame();
+  oled.clear();
+  oled.switchRenderFrame();
   
+  prevA = digitalRead(outA);
 }
 
 ISR (SPI_STC_vect) //SPI interrupt routine
@@ -65,18 +74,24 @@ void loop()
 {
   
   setWeight();
-  printLCD();
+  printOLED();
 }
 
 //method to print weight on the LCD screen
-void printLCD()
+void printOLED()
 {
   
-  LCD.setCursor(0,0); //set location of the text on the LCD   
-  LCD.print(weight);
-  LCD.print("lbs");
-  delay(5); //delay of 5 ms to prevent LCD flickering issue
-  LCD.clear(); //clears the LCD
+  
+
+  oled.setCursor(0,0);
+  oled.print(weight);
+  oled.print(" lbs");  
+  Serial.print(weight);
+  Serial.println(" lbs");
+  //delay(1000);
+  //oled.clear();
+  //delay(1000);
+
 }
 
 //method to set weight
@@ -84,27 +99,42 @@ void setWeight()
 {
   if(setWeightFlag)
   {
+    //bool to read outA and outB
+    
     currA = digitalRead(outA);
-    
-    if(currA != prevA && currA)
-    {
-      if(digitalRead(outB))
-      {
-        weight += 10;
-      }
-      else if(!digitalRead(outB))
-      {
-        weight -= 10;
-      }
-      prevA = currA;
-    }
-    
-  }
-  
-}
+    currB = digitalRead(outB);
+    Serial.print("currA ");
+    Serial.println(currA);
+    Serial.print("currB ");
+    Serial.println(currB);
 
+    if((currA != prevA) && currA) //if current state is not equal to previous state and outA is high
+    {
+      if (currB) //if b is "low"
+      {
+        weight+=incrementFactor; //increment count  
+        Serial.println("hi"); 
+        delay(20);     
+      }
+      else if(!currB && (weight - incrementFactor > 0)) //if b is "high" and decrement won't go below 0
+      {
+        weight-=incrementFactor; //decrement count  
+        Serial.println("bye"); 
+        delay(20); 
+      }        
+    }  
+  prevA = currA; //current state sent to previous state
+  if (temp != weight)
+  {
+    temp = weight;
+    oled.clear();
+  }
+}
+}
 void toggleWeight()
 {
   setWeightFlag = !setWeightFlag;
+  Serial.print("setWeightFlag = ");
+  Serial.println(setWeightFlag);
   delay(20);
 }
