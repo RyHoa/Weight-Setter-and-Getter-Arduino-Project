@@ -1,32 +1,35 @@
-#include <SPI.h>
-#include <Tiny4kOLED.h>
+#include <SPI.h> //included this library to use SPI connection
+#include <Tiny4kOLED.h> //included this library to use oled screen
 
-int slaveSelect = 10;;
+int slaveSelect = 10; //slave select pin for SPI to send information to
+
+int sendPin = 2;  //pin to call the method to send the information to the other arduino
 
 
-int detectPin = 3;
-bool detectFlag;
-bool prev;
+//ir led and photo transistor setup
+int detectPin = 3; //pin to detect changes in sensor
+bool detectFlag; //flag that is set to what the sensor reads
+bool prev; //prev condition of the detect flag
 
-int weightLoss = 0; 
-
-int sendPin = 2; 
-
+int weightLoss = 0;  //int to indicate how much weight you have lost
 
 void setup() 
 {
-  pinMode(detectPin, INPUT);
-  pinMode(slaveSelect, OUTPUT);
-
+  pinMode(detectPin, INPUT); //set pin to input since we want it to read values
+  pinMode(slaveSelect, OUTPUT); //set to output because we need to pull low to send information and then pull high 
   pinMode(sendPin, INPUT); //button press to send the weight to the slave
   
-  Serial.begin(9600);
-  SPI.begin();
-  digitalWrite(slaveSelect, HIGH);
+  Serial.begin(9600); //begin comms
+  SPI.begin(); //begin SPI library setup
+  digitalWrite(slaveSelect, HIGH); //write high to slaveselect since we are not sending anything yet
 
-  attachInterrupt(digitalPinToInterrupt(sendPin),sendWeight,RISING);
-  oled.begin();
+  attachInterrupt(digitalPinToInterrupt(sendPin),sendWeight,RISING); //interrupt command on the sendPin to call sendWeight method on the rising edge
+  oled.begin(); //begin oled and start i2c communication
+
+  // Two fonts: FONT8X16 and FONT6X8
   oled.setFont(FONT8X16);
+
+  //to clear all the memory, clear both rendering frames
   oled.clear();
   oled.switchRenderFrame();
   oled.clear();
@@ -35,33 +38,34 @@ void setup()
 
 void loop() 
 { 
-  detectSensor();
-  oled.setCursor(0,0);
-  oled.print("Today's ");
-  oled.setCursor(0,2);
-  oled.print("WLoss (lbs): ");
-  oled.print(weightLoss);
-  oled.on();
-  delay(500);
+  detectSensor(); //calls the ir led and photo transistor sensor method 
+  oled.setCursor(0,0); //set position on oled
+  oled.print("Today's "); //print on oled
+  oled.setCursor(0,2); //set position on oled
+  oled.print("WLoss (lbs): "); //print on oled
+  oled.print(weightLoss); //print on oled
+  oled.on(); //turn on oled
+  delay(500); //delay 500ms
 
 
 }
 void detectSensor()
 {
-  detectFlag = digitalRead(detectPin);
-  if(detectFlag != prev)
+  detectFlag = digitalRead(detectPin); //flag reads the detectPin volt and give it high or low 
+  if(detectFlag != prev) //if detectFlag is not the same as prev flag 
   {    
-    weightLoss++;
-    prev = detectFlag;
+    weightLoss++; //increase weightLoss by 1
+    prev = detectFlag; //set prev to detectFlag
   }  
 }
+
+//method to send weight using SPI
 void sendWeight()
-{
-  
-  digitalWrite(slaveSelect, LOW);
-  SPI.transfer(weightLoss);
-  delay(500);
-  digitalWrite(slaveSelect, HIGH);  
-  delay(500);
-  weightLoss = 0;
+{  
+  digitalWrite(slaveSelect, LOW); //put slaveSelect low
+  SPI.transfer(weightLoss); //transfer value to SPI
+  delay(500); //delay 500 ms
+  digitalWrite(slaveSelect, HIGH); //put slaveSelect high  
+  delay(500); //delay 500 ms
+  weightLoss = 0; //set weightloss to 0
 }
