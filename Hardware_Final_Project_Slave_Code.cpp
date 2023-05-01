@@ -52,8 +52,10 @@ void setup()
 // SPR1 and SPR0 - Sets the SPI speed, 00 is fastest (4MHz) 11 is slowest (250KHz)
 
   //SPI setup
-  SPCR |= 0b11000000; //turns on SPIE (enable SPI interrupt), turns on SPE (enables SPI)
+  SPCR |= 0b11000011; //turns on SPIE (enable SPI interrupt), turns on SPE (enables SPI)
   pinMode(MISO, OUTPUT); //for slave to send Data to master
+
+  
 
 
   //oled setup

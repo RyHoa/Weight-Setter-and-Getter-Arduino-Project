@@ -24,6 +24,20 @@ void setup()
   SPI.begin(); //begin SPI library setup
   digitalWrite(slaveSelect, HIGH); //write high to slaveselect since we are not sending anything yet
 
+//   https://docs.arduino.cc/tutorials/generic/introduction-to-the-serial-peripheral-interface
+//   SPCR
+// | 7    | 6    | 5    | 4    | 3    | 2    | 1    | 0    |
+// | SPIE | SPE  | DORD | MSTR | CPOL | CPHA | SPR1 | SPR0 |
+// SPIE - Enables the SPI interrupt when 1
+// SPE - Enables the SPI when 1
+// DORD - Sends data least Significant Bit First when 1, most Significant Bit first when 0
+// MSTR - Sets the Arduino in controller mode when 1, peripheral mode when 0
+// CPOL - Sets the data clock to be idle when high if set to 1, idle when low if set to 0
+// CPHA - Samples data on the falling edge of the data clock when 1, rising edge when 0
+// SPR1 and SPR0 - Sets the SPI speed, 00 is fastest (4MHz) 11 is slowest (250KHz)
+
+  SPCR |= 0b11010011; //turns on SPIE (enable SPI interrupt), turns on SPE (enables SPI)
+
   attachInterrupt(digitalPinToInterrupt(sendPin),sendWeight,RISING); //interrupt command on the sendPin to call sendWeight method on the rising edge
   oled.begin(); //begin oled and start i2c communication
 
@@ -35,6 +49,8 @@ void setup()
   oled.switchRenderFrame();
   oled.clear();
   oled.switchRenderFrame();
+
+  
 }
 
 void loop() 
