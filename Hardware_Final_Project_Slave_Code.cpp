@@ -5,27 +5,17 @@
 #include <Tiny4kOLED.h>
 #include<SPI.h>
 
-
-
-
-
-
-
-
-float weight = 100; //set current weight to this
-
-
 //set weight using rotary encoder
 int outA = 3;
 int outB = 4;
-float temp;
+byte temp;
 bool currA;
 bool currB;
 bool prevA = 0; 
 
 
-float weight = 100; //set current weight to this
-float incrementFactor = 5; //how much to increment the weight
+byte weight = 100; //set current weight to this
+byte incrementFactor = 5; //how much to increment the weight
 int setWeightPin = 2; //uses an interrupt pin to setWeight
 volatile bool setWeightFlag = 0; //flag used in interrupt method
 

@@ -11,7 +11,8 @@ int detectPin = 3; //pin to detect changes in sensor
 bool detectFlag; //flag that is set to what the sensor reads
 bool prev; //prev condition of the detect flag
 
-int weightLoss = 0;  //int to indicate how much weight you have lost
+volatile byte weightLoss = 0;  //int to indicate how much weight you have lost
+volatile bool screenReset = 0;
 
 void setup() 
 {
@@ -38,6 +39,12 @@ void setup()
 
 void loop() 
 { 
+
+  if(screenReset)
+  {
+    oled.clear();
+    screenReset = false;
+  }
   detectSensor(); //calls the ir led and photo transistor sensor method 
   oled.setCursor(0,0); //set position on oled
   oled.print("Today's "); //print on oled
@@ -46,26 +53,31 @@ void loop()
   oled.print(weightLoss); //print on oled
   oled.on(); //turn on oled
   delay(500); //delay 500ms
+  
 
 
 }
 void detectSensor()
 {
   detectFlag = digitalRead(detectPin); //flag reads the detectPin volt and give it high or low 
-  if(detectFlag != prev) //if detectFlag is not the same as prev flag 
+  if(detectFlag != prev && detectFlag) //if detectFlag is not the same as prev flag 
   {    
     weightLoss++; //increase weightLoss by 1
-    prev = detectFlag; //set prev to detectFlag
+    
   }  
+  prev = detectFlag; //set prev to detectFlag
 }
 
 //method to send weight using SPI
 void sendWeight()
 {  
+
   digitalWrite(slaveSelect, LOW); //put slaveSelect low
   SPI.transfer(weightLoss); //transfer value to SPI
-  delay(500); //delay 500 ms
+  delay(500); // This command will make the Arduino enter an idle state for approximately 0.5 seconds, also commonly stated in the more appropriate measure of time: 500 milliseconds.
   digitalWrite(slaveSelect, HIGH); //put slaveSelect high  
   delay(500); //delay 500 ms
   weightLoss = 0; //set weightloss to 0
+  screenReset = true;
+ 
 }
