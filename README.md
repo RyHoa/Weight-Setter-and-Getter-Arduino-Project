@@ -65,8 +65,10 @@ In order to simulate a weight loss jar, we made our system take in 3 inputs: Set
 SendWeight, and Pebbles. As output, the system will display weight loss
 (DisplayWeightLossOnOLEDA) and the current weight (DisplayWeightOnOLEDB)
 
+![figure1](https://github.com/RyHoa/Weight-Setter-and-Getter-Arduino-Project/assets/129560634/a79748ac-1586-42d0-b0b0-13c3c1db5054)
 
 Figure 1: Block Diagram
+
 This system was split into two main parts. System 1 (Slave) lets the user set their initial
 weight via a rotary encoder. System 2 (Master) uses a phototransistor and IR led to detect the
 “pebbles'' and calculate weight loss. Using SPI, the two Adruino Unos will communicate with
@@ -82,8 +84,10 @@ To build System 2, we used 1x Arduino Uno, 1x Breadboard, 1x OLED Screen, 1x
 phototransistor, 1x IR LED, 1x 0.10 microFarad Capacitor, 1x Pushbutton, 2x 10k resistors,1x
 100 ohm resistor, 1x 1k resistor, and wires. We built it exactly as the circuit diagram below.
 
+![figure2](https://github.com/RyHoa/Weight-Setter-and-Getter-Arduino-Project/assets/129560634/b8c413c4-49a6-4b9b-8ad5-1467e88eba8d)
 
 Figure 2: Circuit Diagram for System 2
+
 After building the circuits separately, we connected the two together using pins 13,12,11,10 on
 the Arduino. These are the SPI pins. We have to use this pins, as the SPI library uses it. If we
 wanted to manually bit bang we could use any pins. For both circuits, the 10k resistor and
@@ -91,10 +95,11 @@ capacitor are included to counter button bouncing. They are not needed, as softw
 this issue, but having them alongside software helps fix double boucing. After that we soldered
 the circuit. It should match the circuit diagram below.
 
+![figure3](https://github.com/RyHoa/Weight-Setter-and-Getter-Arduino-Project/assets/129560634/db6e117a-882e-4c12-aae7-9f4553240e5e)
 
 Figure 3: Total Circuit Diagram
-After building the system, we wrote the code with our communication protocol being SPI.
 
+After building the system, we wrote the code with our communication protocol being SPI.
 With the system built we had to test it before presenting. We filmed two videos, one was for the
 system and the other was using the analog discovery. To prove that the data is transmitted
 correctly we used the Analog Discovery 2 and the Waveforms application to display the data
@@ -109,6 +114,9 @@ allowed us to read the data. At the start we were getting uninitialized data rea
 setting the SPI frequency in the code to 250 kHz we got readings. We set our samples to 10 M
 and were able to capture the information. As you can see here we got 2 pounds sent on the MOSI
 side.
+
+![figure4](https://github.com/RyHoa/Weight-Setter-and-Getter-Arduino-Project/assets/129560634/d9deb7fe-bff4-419e-aadc-4705d3a6fa73)
+
 Figure 4: Analog Discovery 2 data
 
 # Conclusion
