@@ -1,7 +1,7 @@
 # Weight-Setter-and-Getter-Arduino-Project
 Authors: Elijah Gibson, Ryan Hoang, Trajan Salinas, and Bethany Sumner
 
-# Summary 
+## Summary 
 
 The project allows users to track the weight they have lost between two Arduinos using
 SPI. The purpose is to provide users with a way to visually track the number of pounds they have
@@ -16,7 +16,7 @@ pounds lost by the user. Overall, the project demonstrates how to use circuitry 
 communication in a practical way to track weight loss. It also demonstrates the usage of Analog
 Discovery 2 tool on the SPI communication between two microcontrollers.
 
-# Introduction 
+## Introduction 
 
 Weight loss is a common goal for many individuals, and there are numerous methods
 available to help achieve it. This includes the ‘weight loss jar’ which is popular on many social
@@ -43,7 +43,7 @@ A, resulting in Arduino A having an accurate updated weight. The project provide
 version of a popular weight loss tracking tool, where users will not have to worry about manually
 keeping track of their weight loss while still having a motivated visual to look at.
 
-# Equipment
+## Equipment
 
 - 2x Arduinos
 - 2x Breadboard
@@ -59,7 +59,7 @@ keeping track of their weight loss while still having a motivated visual to look
 - Analog Discovery 2
 - Wires
 
-# Procedure
+## Procedure
 
 In order to simulate a weight loss jar, we made our system take in 3 inputs: SetWeight,
 SendWeight, and Pebbles. As output, the system will display weight loss
@@ -119,7 +119,7 @@ side.
 
 Figure 4: Analog Discovery 2 data
 
-# Conclusion
+## Conclusion
 
 In conclusion, this project successfully showcased two Arduinos using the serial
 communication protocol SPI to transmit weight loss data, providing an accurate way to track
